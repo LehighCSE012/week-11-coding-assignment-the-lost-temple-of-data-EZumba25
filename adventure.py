@@ -1,4 +1,5 @@
-import re  # Standard library import
+import re # Standard library import
+from datetime import datetime
 import pandas as pd  # Third-party import
 
 def load_artifact_data(excel_filepath):
@@ -58,18 +59,32 @@ def load_location_notes(tsv_filepath):
 
 def extract_journal_dates(journal_text):
     """
-    Extracts all dates in MM/DD/YYYY format from the journal text.
+    Extracts all dates in MM/DD/YYYY format from the journal text and validates them.
 
     Args:
         journal_text (str): The full text content of the journal.
 
     Returns:
-        list[str]: A list of date strings found in the text.
+        list[str]: A list of valid date strings found in the text.
     """
     # Regular expression to match dates in MM/DD/YYYY format
     date_pattern = r"\d{2}/\d{2}/\d{4}"
     dates = re.findall(date_pattern, journal_text)
-    return dates
+
+    valid_dates = []
+    for date in dates:
+        try:
+            # Try to parse the date and ensure it's valid
+            parsed_date = datetime.strptime(date, "%m/%d/%Y")
+            # Only add valid dates
+            if 1 <= parsed_date.month <= 12 and 1 <= parsed_date.day <= 31:
+                valid_dates.append(date)
+        except ValueError:
+            # Skip invalid dates (e.g., '99/99/9999')
+            continue
+
+    return valid_dates
+
 
 def extract_secret_codes(journal_text):
     """
