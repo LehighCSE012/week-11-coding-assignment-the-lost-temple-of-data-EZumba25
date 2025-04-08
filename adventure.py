@@ -136,17 +136,19 @@ if __name__ == '__main__':
         print(f"An error occurred loading location data: {e}")
 
     print(f"\n--- Processing Journal from {JOURNAL_FILE} ---")
-    # Instead of catching all exceptions with Exception, catch specific ones:
     try:
-        # File I/O operation
-       with open(journal_file, 'r', encoding='utf-8') as f:
-           journal_content = f.read()
-    except FileNotFoundError as fnf_error:
-        print(f"Error: File not found: {fnf_error}")
-    except IOError as io_error:
-        print(f"Error: IOError occurred: {io_error}")
-    except OSError as os_error:
-        print(f"Error: OS Error occurred: {os_error}")
+        with open(JOURNAL_FILE, 'r', encoding='utf-8') as f:
+            journal_content = f.read()
+
+        print("\nExtracting Dates...")
+        extracted_dates = extract_journal_dates(journal_content)
+        print(f"Found dates: {extracted_dates}")
+
+        print("\nExtracting Secret Codes...")
+        extracted_codes = extract_secret_codes(journal_content)
+        print(f"Found codes: {extracted_codes}")
+
+    except FileNotFoundError:
+        print(f"Error: File not found at {JOURNAL_FILE}")
     except Exception as e:
-    # Only use a general exception as a fallback, if necessary
-        print(f"An unexpected error occurred: {e}")
+        print(f"An unexpected error occurred processing the journal: {e}")
