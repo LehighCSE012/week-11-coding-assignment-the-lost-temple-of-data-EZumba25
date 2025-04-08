@@ -1,5 +1,5 @@
-import pandas as pd
-import re
+import re  # Standard library import
+import pandas as pd  # Third-party import
 
 def load_artifact_data(excel_filepath):
     """
@@ -12,9 +12,16 @@ def load_artifact_data(excel_filepath):
     Returns:
         pandas.DataFrame: DataFrame containing the artifact data.
     """
-    # Read the Excel file, skip the first 3 rows, and load the 'Main Chamber' sheet
-    df = pd.read_excel(excel_filepath, sheet_name='Main Chamber', skiprows=3)
-    return df
+    try:
+        # Read the Excel file, skip the first 3 rows, and load the 'Main Chamber' sheet
+        df = pd.read_excel(excel_filepath, sheet_name='Main Chamber', skiprows=3)
+        return df
+    except FileNotFoundError:
+        print(f"Error: File not found at {excel_filepath}")
+    except pd.errors.EmptyDataError:
+        print(f"Error: The file {excel_filepath} is empty.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 def load_location_notes(tsv_filepath):
     """
@@ -26,9 +33,16 @@ def load_location_notes(tsv_filepath):
     Returns:
         pandas.DataFrame: DataFrame containing the location data.
     """
-    # Read the TSV file, specifying '\t' as the separator
-    df = pd.read_csv(tsv_filepath, sep='\t')
-    return df
+    try:
+        # Read the TSV file, specifying '\t' as the separator
+        df = pd.read_csv(tsv_filepath, sep='\t')
+        return df
+    except FileNotFoundError:
+        print(f"Error: File not found at {tsv_filepath}")
+    except pd.errors.EmptyDataError:
+        print(f"Error: The file {tsv_filepath} is empty.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 def extract_journal_dates(journal_text):
     """
@@ -71,24 +85,22 @@ if __name__ == '__main__':
     print(f"--- Loading Artifact Data from {EXCEL_FILE} ---")
     try:
         artifacts_df = load_artifact_data(EXCEL_FILE)
-        print("Successfully loaded DataFrame. First 5 rows:")
-        print(artifacts_df.head())
-        print("\nDataFrame Info:")
-        artifacts_df.info()
-    except FileNotFoundError:
-        print(f"Error: File not found at {EXCEL_FILE}")
+        if artifacts_df is not None:
+            print("Successfully loaded DataFrame. First 5 rows:")
+            print(artifacts_df.head())
+            print("\nDataFrame Info:")
+            artifacts_df.info()
     except Exception as e:
         print(f"An error occurred loading artifact data: {e}")
 
     print(f"\n--- Loading Location Notes from {TSV_FILE} ---")
     try:
         locations_df = load_location_notes(TSV_FILE)
-        print("Successfully loaded DataFrame. First 5 rows:")
-        print(locations_df.head())
-        print("\nDataFrame Info:")
-        locations_df.info()
-    except FileNotFoundError:
-        print(f"Error: File not found at {TSV_FILE}")
+        if locations_df is not None:
+            print("Successfully loaded DataFrame. First 5 rows:")
+            print(locations_df.head())
+            print("\nDataFrame Info:")
+            locations_df.info()
     except Exception as e:
         print(f"An error occurred loading location data: {e}")
 
@@ -108,4 +120,4 @@ if __name__ == '__main__':
     except FileNotFoundError:
         print(f"Error: File not found at {JOURNAL_FILE}")
     except Exception as e:
-        print(f"An error occurred processing the journal: {e}")
+        print(f"An unexpected error occurred processing the journal: {e}")
