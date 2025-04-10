@@ -1,3 +1,9 @@
+"""
+This module contains functions for processing data related to 
+Dr. Evelyn Reed's expedition to the Lost Temple of Azmar.  It includes
+functions for loading data from Excel and TSV files, and extracting
+information from journal entries using regular expressions.
+"""
 import re
 from datetime import datetime
 import pandas as pd
