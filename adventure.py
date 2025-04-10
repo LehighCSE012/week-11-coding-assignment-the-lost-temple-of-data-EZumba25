@@ -93,8 +93,7 @@ def extract_secret_codes(journal_text):
     codes = re.findall(code_pattern, journal_text)
     return codes
 
-
-# --- Optional: Main execution block for your own testing ---
+# Main block
 if __name__ == '__main__':
     EXCEL_FILE = 'artifacts.xlsx'
     TSV_FILE = 'locations.tsv'
